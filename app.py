@@ -21,23 +21,27 @@ def get_links(url):
     except:
         return [0]
     op=[1]
-    download_link=[]
     unwanted_links=["https://play.google.com/store/apps/details?id=saveinsta.download.video.instagram.photo.reels.story","/"]
+    download_link=[]
+    titles=[]
     for link in soup.find_all('a'):
         url = link.get('href')
+        title = link.get("title")
         if url not in unwanted_links:
             download_link.append(url)
-        
+            titles.append(title)   
+            
     preview_link=[]
     for link in soup.find_all('img'):
         tlink = link.get('src')
         if tlink=='/imgs/loader.gif':
             tlink = link.get('data-src')
-        preview_link.append(tlink)
+        preview_link.append(str(tlink).replace("amp;",""))
     op.append(download_link)
     op.append(preview_link)
+    op.append(titles)
     return op
-    
+        
 app = Flask(__name__)
 
 @app.route('/',methods=['POST','GET'])
@@ -45,8 +49,10 @@ def main():
     if request.method=="POST":
         link=request.form['url']
         data=get_links(link)
+        with open('output.txt','w') as file:
+            file.write(str(data))
         if(data[0]):
-            return render_template('home.html',op=data[0],download_links=data[1],preview_links=data[2],length=len(data[1]))
+            return render_template('home.html',op=data[0],download_links=data[1],preview_links=data[2],length=len(data[1]),titles=data[3])
         else:
             return render_template('home.html',info="Not Available")
     else:

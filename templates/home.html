@@ -39,7 +39,7 @@
                 {% if op %}
                 {% for i in range(length) %}
                 <img src="{{preview_links[i]|replace('amp;','')}}">
-                <a href="{{download_links[i]|replace('amp;','')}}"><strong>Download Now</strong></a>
+                <a href="{{download_links[i]|replace('amp;','')}}"><strong>{{titles[i]}}</strong></a>
                 {% endfor %}
                 {% endif %}
             </div>
