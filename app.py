@@ -21,8 +21,21 @@ def get_links(url):
     except:
         return [0]
     op=[1]
-    op.append(soup.find_all('a')[0].get('href'))
-    op.append(soup.find_all('img')[0].get('src'))
+    download_link=[]
+    unwanted_links=["https://play.google.com/store/apps/details?id=saveinsta.download.video.instagram.photo.reels.story","/"]
+    for link in soup.find_all('a'):
+        url = link.get('href')
+        if url not in unwanted_links:
+            download_link.append(url)
+        
+    preview_link=[]
+    for link in soup.find_all('img'):
+        tlink = link.get('src')
+        if tlink=='/imgs/loader.gif':
+            tlink = link.get('data-src')
+        preview_link.append(tlink)
+    op.append(download_link)
+    op.append(preview_link)
     return op
     
 app = Flask(__name__)
@@ -33,9 +46,9 @@ def main():
         link=request.form['url']
         data=get_links(link)
         if(data[0]):
-            return render_template('home.html',op=data[0],download_link=data[1],image_url=data[2])
+            return render_template('home.html',op=data[0],download_links=data[1],preview_links=data[2],length=len(data[1]))
         else:
-            return render_template('home.html',info="Video Not Available")
+            return render_template('home.html',info="Not Available")
     else:
         return render_template('home.html')
     
