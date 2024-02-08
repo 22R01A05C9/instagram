@@ -49,8 +49,6 @@ def main():
     if request.method=="POST":
         link=request.form['url']
         data=get_links(link)
-        with open('output.txt','w') as file:
-            file.write(str(data))
         if(data[0]):
             return render_template('home.html',op=data[0],download_links=data[1],preview_links=data[2],length=len(data[1]),titles=data[3])
         else:
